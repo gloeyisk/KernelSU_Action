@@ -209,6 +209,50 @@ jobs:
         # Revert Drop Non-GKI Support
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/KernelSU
         git revert --no-commit 898e9d4f8ca9b2f46b0c6b36b80a872b5b88d899
+    
+    - name: Setup susfs4ksu
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace
+        git clone --branch ${{ env.SUSFS4KSU_TAG }} --single-branch https://gitlab.com/simonpunk/susfs4ksu.git
+
+    - name: Apply backport umount patch
+      run: |
+        echo "Applying umount patch"
+
+        cp ./patches/bootlegger_kernel/patches/KernelSU/Backport/backport_path_umount.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/ && patch -p1 < backport_path_umount.patch
+    
+    - name: Apply safemode ksu patch
+      run: |
+        echo "Applying safemode ksu patch"
+
+        cp ./patches/bootlegger_kernel/patches/KernelSU/Backport/safe_mode_ksu.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/ && patch -p1 < safe_mode_ksu.patch
+    
+    - name: Apply hook ksu patch
+      run: |
+        echo "Applying hook ksu patch"
+
+        cp ./patches/bootlegger_kernel/patches/KernelSU/Backport/hook_patches_ksu-4.14.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/ && patch -p1 < hook_patches_ksu-4.14.patch
+    
+    - name: Apply susfs4ksu patches
+      run: |
+        echo "Applying susfs4ksu patches"
+        
+        cd $GITHUB_WORKSPACE/kernel_workspace/susfs4ksu
+        cp ./kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/KernelSU
+        cp ./kernel_patches/50_add_susfs_in_kernel-4.14.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/KernelSU
+        cp ./kernel_patches/fs/susfs.c $GITHUB_WORKSPACE/kernel_workspace/android-kernel/fs/
+        cp ./kernel_patches/include/linux/susfs.h $GITHUB_WORKSPACE/kernel_workspace/android-kernel/include/linux/
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/KernelSU && patch -p1 < 10_enable_susfs_for_ksu.patch
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel && patch -p1 < 50_add_susfs_in_kernel-4.14.patch
+
+    - name: Enable susfs4ksu
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        echo "CONFIG_KSU_SUSFS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+
 
     - name: Setup Configuration for Kernel
       run: |
