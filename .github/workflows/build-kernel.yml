@@ -217,6 +217,13 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone --branch ${{ env.SUSFS4KSU_TAG }} --single-branch https://gitlab.com/simonpunk/susfs4ksu.git
 
+    - name: Debug - List directory contents
+      run: |
+        echo "Contents of $GITHUB_WORKSPACE:"
+        ls -R $GITHUB_WORKSPACE
+        echo "Contents of $GITHUB_WORKSPACE/patches:"
+        ls -R $GITHUB_WORKSPACE/patches
+
     - name: Apply backport umount patch
       run: |
         echo "Applying umount patch"
