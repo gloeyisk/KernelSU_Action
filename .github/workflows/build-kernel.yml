@@ -223,6 +223,11 @@ jobs:
         ls -R $GITHUB_WORKSPACE
         echo "Contents of $GITHUB_WORKSPACE/patches:"
         ls -R $GITHUB_WORKSPACE/patches
+        
+    - name: Checkout submodule
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
 
     - name: Apply backport umount patch
       run: |
