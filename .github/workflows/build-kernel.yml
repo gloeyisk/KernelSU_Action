@@ -239,14 +239,7 @@ jobs:
 
         cp $GITHUB_WORKSPACE/patches/bootlegger_kernel/patches/KernelSU/Backport/safe_mode_ksu.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/ && patch -p1 < safe_mode_ksu.patch
-    
-    - name: Apply hook ksu patch
-      run: |
-        echo "Applying hook ksu patch"
 
-        cp $GITHUB_WORKSPACE/patches/bootlegger_kernel/patches/KernelSU/Backport/hook_patches_ksu-4.14.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/ && patch -p1 < hook_patches_ksu-4.14.patch
-    
     - name: Apply susfs4ksu patches
       run: |
         echo "Applying susfs4ksu patches"
