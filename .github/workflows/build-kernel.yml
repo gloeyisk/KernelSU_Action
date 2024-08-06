@@ -221,7 +221,7 @@ jobs:
       run: |
         echo "Applying umount patch"
 
-        cp ./patches/bootlegger_kernel/patches/KernelSU/Backport/backport_path_umount.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
+        cp patches/bootlegger_kernel/patches/KernelSU/Backport/backport_path_umount.patch $GITHUB_WORKSPACE/kernel_workspace/android-kernel/
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/ && patch -p1 < backport_path_umount.patch
     
     - name: Apply safemode ksu patch
